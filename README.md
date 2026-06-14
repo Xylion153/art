@@ -29,6 +29,27 @@ Pages with a D1 database for products, builder options, and inquiries.
 └── wrangler.toml
 ```
 
+## Initialize the Production Database (one-time, run from your computer)
+
+The Cloudflare Pages project and D1 database (`art-storefront-db`) already exist and
+`wrangler.toml` is pointed at the right database ID, but the database itself is empty until
+you run the schema + seed data against it once:
+
+```sh
+git clone https://github.com/Xylion153/art.git
+cd art
+npm install
+
+npx wrangler login          # opens a browser to authorize wrangler with your Cloudflare account
+
+npm run db:migrate:remote    # creates the tables (products, options, gallery, inquiries)
+npm run db:seed:remote       # adds sample products/options/gallery so the site isn't empty
+```
+
+After this, reload the live site — pages that were 500ing (home, shop, gallery, builder, etc.)
+should load normally. You only need to do this once; future schema changes go in new files under
+`db/migrations/` and get applied the same way.
+
 ## Local Development
 
 ```sh
