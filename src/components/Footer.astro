@@ -1,0 +1,41 @@
+---
+import { SITE } from '../config';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-ink/10 mt-16 bg-parchment-dark">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10 grid gap-8 sm:grid-cols-3 text-sm">
+    <div>
+      <h3 class="font-bold text-lg mb-2">{SITE.name}</h3>
+      <p class="text-ink/70">{SITE.tagline}</p>
+    </div>
+    <div>
+      <h4 class="font-bold mb-2">Explore</h4>
+      <ul class="space-y-1 text-ink/70">
+        <li><a href="/gallery" class="hover:text-accent">Gallery</a></li>
+        <li><a href="/shop" class="hover:text-accent">Shop</a></li>
+        <li><a href="/builder" class="hover:text-accent">Custom Builder</a></li>
+        <li><a href="/commission" class="hover:text-accent">Commissions</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="font-bold mb-2">Connect</h4>
+      <ul class="space-y-1 text-ink/70">
+        <li><a href={`mailto:${SITE.email}`} class="hover:text-accent">{SITE.email}</a></li>
+        {SITE.instagram && (
+          <li><a href={SITE.instagram} target="_blank" rel="noreferrer" class="hover:text-accent">Instagram</a></li>
+        )}
+        {SITE.etsy && (
+          <li><a href={SITE.etsy} target="_blank" rel="noreferrer" class="hover:text-accent">Etsy</a></li>
+        )}
+        {SITE.discord && (
+          <li><a href={SITE.discord} target="_blank" rel="noreferrer" class="hover:text-accent">Discord</a></li>
+        )}
+      </ul>
+    </div>
+  </div>
+  <div class="text-center text-xs text-ink/50 pb-6">
+    &copy; {year} {SITE.name}. All artwork remains the property of the artist.
+  </div>
+</footer>

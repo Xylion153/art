@@ -1,0 +1,45 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getGalleryItems } from '../lib/db';
+
+const db = Astro.locals.runtime.env.DB;
+const gallery = await getGalleryItems(db);
+---
+
+<Layout title="Gallery" description="Original artwork and illustration pieces.">
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 pt-12 pb-20">
+    <h1 class="text-3xl sm:text-4xl font-bold mb-2">Gallery</h1>
+    <p class="text-ink/70 mb-10 max-w-prose">
+      A look at original paintings, illustrations, and concept work. Pieces marked
+      &ldquo;Available&rdquo; can be purchased &mdash; reach out via the contact page if you're interested.
+    </p>
+
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {gallery.map((item) => (
+        <div class="rounded-xl overflow-hidden bg-white shadow-sm">
+          <img src={item.image_url} alt={item.title} class="w-full aspect-square object-cover" />
+          <div class="p-4">
+            <div class="flex items-start justify-between gap-2">
+              <h2 class="font-bold">{item.title}</h2>
+              {item.available === 1 && (
+                <span class="text-xs uppercase tracking-wide bg-accent/10 text-accent px-2 py-1 rounded-full whitespace-nowrap">
+                  Available
+                </span>
+              )}
+            </div>
+            {item.medium && <p class="text-sm text-ink/60 mt-1">{item.medium}</p>}
+            {item.description && <p class="text-sm text-ink/70 mt-2">{item.description}</p>}
+            {item.available === 1 && item.price ? (
+              <p class="mt-3 font-bold">${item.price.toFixed(2)}</p>
+            ) : null}
+            {item.available === 1 && (
+              <a href="/contact" class="mt-3 inline-block text-accent font-semibold hover:underline text-sm">
+                Inquire about this piece &rarr;
+              </a>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+</Layout>

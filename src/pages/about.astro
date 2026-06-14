@@ -1,0 +1,33 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { SITE } from '../config';
+---
+
+<Layout title="About" description={`About ${SITE.artistName}`}>
+  <section class="max-w-3xl mx-auto px-4 sm:px-6 pt-12 pb-24">
+    <h1 class="text-3xl sm:text-4xl font-bold mb-6">About {SITE.artistName}</h1>
+    <div class="grid gap-8 sm:grid-cols-[200px_1fr] items-start">
+      <img src="/images/hero.svg" alt={SITE.artistName} class="w-full rounded-xl shadow-sm" />
+      <div class="space-y-4 text-ink/80">
+        <p>
+          Hi, I'm {SITE.artistName} &mdash; I paint and draw original artwork, with a soft spot for
+          the Pokémon TCG and tabletop games. What started as fan art and card-inspired sketches
+          has grown into custom commissions, hand-finished binders, deck boxes, posters, and
+          playmats.
+        </p>
+        <p>
+          Every custom order is made (or finished) by hand, so no two pieces are exactly alike.
+          If you have an idea &mdash; a favorite Pokémon, a character, a color palette, anything &mdash;
+          I'd love to help bring it to life.
+        </p>
+        <p>
+          Want something one-of-a-kind? Head over to the
+          <a href="/builder" class="text-accent font-semibold hover:underline">custom builder</a>
+          to design your own gear, or send a
+          <a href="/commission" class="text-accent font-semibold hover:underline">commission request</a>
+          for original card art and illustrations.
+        </p>
+      </div>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #2b1d10;
+  --color-parchment: #f6f1e7;
+  --color-parchment-dark: #ece3d1;
+  --color-accent: #b5482a;
+  --color-accent-dark: #8c3620;
+  --color-gold: #cb9b51;
+  --font-display: "Georgia", "Iowan Old Style", serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-parchment);
+  color: var(--color-ink);
+  font-family: var(--font-display);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  padding: 0.65rem 1.5rem;
+  font-weight: 600;
+  transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+
+.btn-primary {
+  background-color: var(--color-accent);
+  color: var(--color-parchment);
+}
+.btn-primary:hover {
+  background-color: var(--color-accent-dark);
+}
+
+.btn-outline {
+  border: 1px solid var(--color-ink);
+  color: var(--color-ink);
+}
+.btn-outline:hover {
+  background-color: var(--color-ink);
+  color: var(--color-parchment);
+}
+
+.option-card {
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background-color: white;
+  transition: border-color 0.15s ease, transform 0.1s ease;
+}
+
+.option-card:hover {
+  transform: translateY(-2px);
+}
+
+.option-card.selected {
+  border-color: var(--color-accent);
+}

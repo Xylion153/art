@@ -1,0 +1,288 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getProducts, getOptionGroups } from '../lib/db';
+import type { OptionGroup, Product } from '../lib/db';
+
+const db = Astro.locals.runtime.env.DB;
+const products = (await getProducts(db)).filter((p) => p.configurable === 1);
+
+const optionsByCategory: Record<string, OptionGroup[]> = {};
+for (const product of products) {
+  if (!optionsByCategory[product.category]) {
+    optionsByCategory[product.category] = await getOptionGroups(db, product.category);
+  }
+}
+
+const preselect = Astro.url.searchParams.get('product') ?? '';
+
+const builderData = {
+  products: products.map((p: Product) => ({
+    slug: p.slug,
+    name: p.name,
+    category: p.category,
+    basePrice: p.base_price,
+    image: p.image_url,
+    description: p.description,
+  })),
+  optionsByCategory,
+  preselect,
+};
+---
+
+<Layout
+  title="Custom Builder"
+  description="Design your own binder, deck box, poster, playmat, or card art with live pricing."
+>
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 pt-12 pb-24">
+    <h1 class="text-3xl sm:text-4xl font-bold mb-2">Custom Builder</h1>
+    <p class="text-ink/70 mb-8 max-w-prose">
+      Pick a product, then choose the frame, material, size, and design that fit your style.
+      The price updates as you go. When you're happy with your design, send it over as a request
+      &mdash; we'll follow up by email to confirm details and reference images.
+    </p>
+
+    <div id="builder-root" class="grid gap-10 lg:grid-cols-[2fr_1fr]">
+      <div>
+        <!-- Step 1: Product selection -->
+        <div class="mb-10">
+          <h2 class="text-xl font-bold mb-4">1. Choose a Product</h2>
+          <div id="product-grid" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
+        </div>
+
+        <!-- Step 2: Options -->
+        <div id="options-section" class="hidden">
+          <h2 class="text-xl font-bold mb-4">2. Customize It</h2>
+          <div id="option-groups" class="space-y-8"></div>
+        </div>
+
+        <!-- Step 3: Details -->
+        <div id="details-section" class="hidden mt-10">
+          <h2 class="text-xl font-bold mb-4">3. Tell Us About Your Idea</h2>
+          <form id="builder-form" class="grid gap-4 max-w-xl">
+            <div>
+              <label for="builder-name" class="block text-sm font-semibold mb-1">Your Name</label>
+              <input id="builder-name" name="name" type="text" required class="w-full rounded-lg border border-ink/20 px-3 py-2" />
+            </div>
+            <div>
+              <label for="builder-email" class="block text-sm font-semibold mb-1">Email</label>
+              <input id="builder-email" name="email" type="email" required class="w-full rounded-lg border border-ink/20 px-3 py-2" />
+            </div>
+            <div>
+              <label for="builder-message" class="block text-sm font-semibold mb-1">
+                Describe your idea (theme, characters, Pokémon, colors, reference links, etc.)
+              </label>
+              <textarea id="builder-message" name="message" rows="5" class="w-full rounded-lg border border-ink/20 px-3 py-2"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary w-fit">Send Custom Order Request</button>
+            <p id="builder-status" class="text-sm"></p>
+          </form>
+        </div>
+      </div>
+
+      <!-- Summary -->
+      <aside class="lg:sticky lg:top-24 self-start rounded-xl bg-white shadow-sm p-6">
+        <h2 class="font-bold text-lg mb-4">Your Design</h2>
+        <div id="summary-product" class="text-ink/70 text-sm mb-2">No product selected yet.</div>
+        <ul id="summary-options" class="text-sm text-ink/70 space-y-1 mb-4"></ul>
+        <div class="border-t border-ink/10 pt-4 flex items-baseline justify-between">
+          <span class="font-bold">Estimated Total</span>
+          <span id="summary-total" class="text-2xl font-bold text-accent">$0.00</span>
+        </div>
+        <p class="text-xs text-ink/50 mt-3">
+          Final pricing is confirmed after we review your request &mdash; this is an estimate based
+          on your selections.
+        </p>
+      </aside>
+    </div>
+  </section>
+
+  <script type="application/json" id="builder-data" set:html={JSON.stringify(builderData)} />
+</Layout>
+
+<script>
+  type Choice = { id: number; label: string; image_url: string | null; price_modifier: number };
+  type Group = { id: number; key: string; label: string; choices: Choice[] };
+  type BuilderProduct = {
+    slug: string;
+    name: string;
+    category: string;
+    basePrice: number;
+    image: string | null;
+    description: string | null;
+  };
+  type BuilderData = {
+    products: BuilderProduct[];
+    optionsByCategory: Record<string, Group[]>;
+    preselect: string;
+  };
+
+  const dataEl = document.getElementById('builder-data');
+  const data: BuilderData = JSON.parse(dataEl?.textContent || '{}');
+
+  const productGrid = document.getElementById('product-grid')!;
+  const optionsSection = document.getElementById('options-section')!;
+  const optionGroupsEl = document.getElementById('option-groups')!;
+  const detailsSection = document.getElementById('details-section')!;
+  const summaryProduct = document.getElementById('summary-product')!;
+  const summaryOptions = document.getElementById('summary-options')!;
+  const summaryTotal = document.getElementById('summary-total')!;
+  const form = document.getElementById('builder-form') as HTMLFormElement;
+  const statusEl = document.getElementById('builder-status')!;
+
+  let selectedProduct: BuilderProduct | null = null;
+  const selections: Record<string, Choice> = {};
+
+  function renderProducts() {
+    productGrid.innerHTML = '';
+    for (const product of data.products) {
+      const card = document.createElement('button');
+      card.type = 'button';
+      card.className = 'option-card text-left' + (selectedProduct?.slug === product.slug ? ' selected' : '');
+      card.innerHTML = `
+        <img src="${product.image ?? '/images/hero.svg'}" alt="${product.name}" class="w-full aspect-square object-cover" />
+        <div class="p-3">
+          <p class="font-bold">${product.name}</p>
+          <p class="text-sm text-ink/60">From $${product.basePrice.toFixed(2)}</p>
+        </div>
+      `;
+      card.addEventListener('click', () => selectProduct(product));
+      productGrid.appendChild(card);
+    }
+  }
+
+  function selectProduct(product: BuilderProduct) {
+    selectedProduct = product;
+    for (const key of Object.keys(selections)) delete selections[key];
+
+    const groups = data.optionsByCategory[product.category] ?? [];
+    for (const group of groups) {
+      if (group.choices.length > 0) {
+        selections[group.key] = group.choices[0];
+      }
+    }
+
+    renderProducts();
+    renderOptions();
+    updateSummary();
+    optionsSection.classList.remove('hidden');
+    detailsSection.classList.remove('hidden');
+  }
+
+  function renderOptions() {
+    if (!selectedProduct) return;
+    const groups = data.optionsByCategory[selectedProduct.category] ?? [];
+    optionGroupsEl.innerHTML = '';
+
+    for (const group of groups) {
+      const wrapper = document.createElement('div');
+      const grid = document.createElement('div');
+      grid.className = 'grid gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4';
+
+      for (const choice of group.choices) {
+        const card = document.createElement('button');
+        card.type = 'button';
+        const isSelected = selections[group.key]?.id === choice.id;
+        card.className = 'option-card text-left' + (isSelected ? ' selected' : '');
+        const sign = choice.price_modifier > 0 ? '+' : '';
+        card.innerHTML = `
+          <img src="${choice.image_url ?? '/images/hero.svg'}" alt="${choice.label}" class="w-full aspect-square object-cover" />
+          <div class="p-2">
+            <p class="text-sm font-semibold">${choice.label}</p>
+            ${choice.price_modifier !== 0 ? `<p class="text-xs text-ink/60">${sign}$${choice.price_modifier.toFixed(2)}</p>` : ''}
+          </div>
+        `;
+        card.addEventListener('click', () => {
+          selections[group.key] = choice;
+          renderOptions();
+          updateSummary();
+        });
+        grid.appendChild(card);
+      }
+
+      wrapper.innerHTML = `<h3 class="font-bold mb-3">${group.label}</h3>`;
+      wrapper.appendChild(grid);
+      optionGroupsEl.appendChild(wrapper);
+    }
+  }
+
+  function updateSummary() {
+    if (!selectedProduct) {
+      summaryProduct.textContent = 'No product selected yet.';
+      summaryOptions.innerHTML = '';
+      summaryTotal.textContent = '$0.00';
+      return;
+    }
+
+    summaryProduct.innerHTML = `<span class="font-bold text-ink">${selectedProduct.name}</span>`;
+
+    let total = selectedProduct.basePrice;
+    summaryOptions.innerHTML = '';
+    const groups = data.optionsByCategory[selectedProduct.category] ?? [];
+    for (const group of groups) {
+      const choice = selections[group.key];
+      if (!choice) continue;
+      total += choice.price_modifier;
+      const li = document.createElement('li');
+      const sign = choice.price_modifier > 0 ? '+' : '';
+      const modifierText = choice.price_modifier !== 0 ? ` (${sign}$${choice.price_modifier.toFixed(2)})` : '';
+      li.innerHTML = `<span class="font-semibold text-ink">${group.label}:</span> ${choice.label}${modifierText}`;
+      summaryOptions.appendChild(li);
+    }
+
+    summaryTotal.textContent = `$${total.toFixed(2)}`;
+  }
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!selectedProduct) return;
+
+    statusEl.textContent = 'Sending...';
+    statusEl.className = 'text-sm text-ink/60';
+
+    const formData = new FormData(form);
+    const groups = data.optionsByCategory[selectedProduct.category] ?? [];
+    let total = selectedProduct.basePrice;
+    const chosenOptions: Record<string, { label: string; price_modifier: number }> = {};
+    for (const group of groups) {
+      const choice = selections[group.key];
+      if (!choice) continue;
+      total += choice.price_modifier;
+      chosenOptions[group.label] = { label: choice.label, price_modifier: choice.price_modifier };
+    }
+
+    const payload = {
+      type: 'custom_order',
+      name: formData.get('name'),
+      email: formData.get('email'),
+      message: formData.get('message'),
+      details: {
+        product: selectedProduct.name,
+        productSlug: selectedProduct.slug,
+        options: chosenOptions,
+        estimatedTotal: total,
+      },
+    };
+
+    try {
+      const res = await fetch('/api/inquiry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error('Request failed');
+      statusEl.textContent = "Thanks! We've received your custom order request and will email you soon.";
+      statusEl.className = 'text-sm text-green-700';
+      form.reset();
+    } catch (err) {
+      statusEl.textContent = 'Something went wrong. Please try again or email us directly.';
+      statusEl.className = 'text-sm text-red-700';
+    }
+  });
+
+  renderProducts();
+
+  if (data.preselect) {
+    const match = data.products.find((p) => p.slug === data.preselect);
+    if (match) selectProduct(match);
+  }
+</script>

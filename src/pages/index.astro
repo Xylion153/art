@@ -1,0 +1,95 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { SITE } from '../config';
+import { getGalleryItems, getProducts } from '../lib/db';
+
+const db = Astro.locals.runtime.env.DB;
+const [gallery, products] = await Promise.all([getGalleryItems(db), getProducts(db)]);
+const featured = gallery.slice(0, 3);
+const featuredProducts = products.slice(0, 4);
+---
+
+<Layout>
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-20 grid gap-10 lg:grid-cols-2 items-center">
+    <div>
+      <p class="uppercase tracking-widest text-accent font-semibold text-sm mb-3">
+        Hand-painted art &amp; custom TCG gear
+      </p>
+      <h1 class="text-4xl sm:text-5xl font-bold leading-tight mb-4">
+        {SITE.tagline}
+      </h1>
+      <p class="text-ink/70 mb-8 max-w-prose">
+        Browse original pieces, order custom binders, deck boxes, posters, and playmats, or
+        commission a one-of-a-kind illustration for your favorite Pokémon or TCG card.
+      </p>
+      <div class="flex flex-wrap gap-3">
+        <a href="/builder" class="btn btn-primary">Start a Custom Order</a>
+        <a href="/gallery" class="btn btn-outline">View Gallery</a>
+        <a href="/commission" class="btn btn-outline">Request a Commission</a>
+      </div>
+    </div>
+    <div class="rounded-2xl overflow-hidden shadow-lg">
+      <img src="/images/hero.svg" alt="Featured artwork" class="w-full h-full object-cover" />
+    </div>
+  </section>
+
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 pb-20">
+    <div class="flex items-end justify-between mb-6">
+      <h2 class="text-2xl sm:text-3xl font-bold">From the Gallery</h2>
+      <a href="/gallery" class="text-accent font-semibold hover:underline">See all &rarr;</a>
+    </div>
+    <div class="grid gap-6 sm:grid-cols-3">
+      {featured.map((item) => (
+        <a href="/gallery" class="group block rounded-xl overflow-hidden bg-white shadow-sm">
+          <img src={item.image_url} alt={item.title} class="w-full aspect-square object-cover group-hover:scale-105 transition-transform" />
+          <div class="p-4">
+            <h3 class="font-bold">{item.title}</h3>
+            <p class="text-sm text-ink/60">{item.medium}</p>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 pb-20">
+    <div class="flex items-end justify-between mb-6">
+      <h2 class="text-2xl sm:text-3xl font-bold">Shop Custom Gear</h2>
+      <a href="/shop" class="text-accent font-semibold hover:underline">View shop &rarr;</a>
+    </div>
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {featuredProducts.map((product) => (
+        <a href={`/shop/${product.slug}`} class="group block rounded-xl overflow-hidden bg-white shadow-sm">
+          <img src={product.image_url ?? '/images/hero.svg'} alt={product.name} class="w-full aspect-square object-cover group-hover:scale-105 transition-transform" />
+          <div class="p-4">
+            <h3 class="font-bold">{product.name}</h3>
+            <p class="text-sm text-ink/60">From ${product.base_price.toFixed(2)}</p>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 pb-24">
+    <div class="rounded-2xl bg-ink text-parchment p-8 sm:p-12 grid gap-6 sm:grid-cols-3 text-center">
+      <div>
+        <h3 class="text-xl font-bold mb-2">Pokémon-Focused Card Art</h3>
+        <p class="text-parchment/70 text-sm">
+          Send in the card and concept you want, and get a custom painted or digital piece featuring your favorite Pokémon.
+        </p>
+      </div>
+      <div>
+        <h3 class="text-xl font-bold mb-2">Build Your Own</h3>
+        <p class="text-parchment/70 text-sm">
+          Use the custom builder to pick a binder, deck box, poster, or playmat, then choose the
+          frame, material, and design that fit your style &mdash; with live pricing.
+        </p>
+      </div>
+      <div>
+        <h3 class="text-xl font-bold mb-2">Direct From the Artist</h3>
+        <p class="text-parchment/70 text-sm">
+          Every order is reviewed personally. Reach out anytime with questions about a commission or order.
+        </p>
+      </div>
+    </div>
+  </section>
+</Layout>

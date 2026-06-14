@@ -1,0 +1,65 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { SITE } from '../config';
+---
+
+<Layout title="Contact" description="Get in touch about commissions, orders, or general questions.">
+  <section class="max-w-3xl mx-auto px-4 sm:px-6 pt-12 pb-24">
+    <h1 class="text-3xl sm:text-4xl font-bold mb-2">Contact</h1>
+    <p class="text-ink/70 mb-10 max-w-prose">
+      Questions about an order, a piece in the gallery, or anything else? Send a message below,
+      or reach out directly at <a href={`mailto:${SITE.email}`} class="text-accent font-semibold hover:underline">{SITE.email}</a>.
+    </p>
+
+    <form id="contact-form" class="grid gap-4 max-w-xl">
+      <div>
+        <label for="name" class="block text-sm font-semibold mb-1">Name</label>
+        <input id="name" name="name" type="text" required class="w-full rounded-lg border border-ink/20 px-3 py-2" />
+      </div>
+      <div>
+        <label for="email" class="block text-sm font-semibold mb-1">Email</label>
+        <input id="email" name="email" type="email" required class="w-full rounded-lg border border-ink/20 px-3 py-2" />
+      </div>
+      <div>
+        <label for="message" class="block text-sm font-semibold mb-1">Message</label>
+        <textarea id="message" name="message" rows="6" required class="w-full rounded-lg border border-ink/20 px-3 py-2"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary w-fit">Send Message</button>
+      <p id="status" class="text-sm"></p>
+    </form>
+  </section>
+</Layout>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const statusEl = document.getElementById('status')!;
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    statusEl.textContent = 'Sending...';
+    statusEl.className = 'text-sm text-ink/60';
+
+    const formData = new FormData(form);
+    const payload = {
+      type: 'contact',
+      name: formData.get('name'),
+      email: formData.get('email'),
+      message: formData.get('message'),
+    };
+
+    try {
+      const res = await fetch('/api/inquiry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error('Request failed');
+      statusEl.textContent = "Thanks! Your message has been sent.";
+      statusEl.className = 'text-sm text-green-700';
+      form.reset();
+    } catch {
+      statusEl.textContent = 'Something went wrong. Please try again or email us directly.';
+      statusEl.className = 'text-sm text-red-700';
+    }
+  });
+</script>

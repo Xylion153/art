@@ -1,0 +1,122 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="Commissions"
+  description="Commission custom card art, original illustrations, and Pokémon-inspired pieces."
+>
+  <section class="max-w-3xl mx-auto px-4 sm:px-6 pt-12 pb-24">
+    <h1 class="text-3xl sm:text-4xl font-bold mb-2">Commissions</h1>
+    <p class="text-ink/70 mb-10 max-w-prose">
+      Looking for something fully custom &mdash; a painted or digital piece for a specific Pokémon
+      card, an original character illustration, or anything in between? Fill out the form below
+      and we'll follow up with pricing, timeline, and next steps.
+    </p>
+
+    <form id="commission-form" class="grid gap-4">
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div>
+          <label for="name" class="block text-sm font-semibold mb-1">Name</label>
+          <input id="name" name="name" type="text" required class="w-full rounded-lg border border-ink/20 px-3 py-2" />
+        </div>
+        <div>
+          <label for="email" class="block text-sm font-semibold mb-1">Email</label>
+          <input id="email" name="email" type="email" required class="w-full rounded-lg border border-ink/20 px-3 py-2" />
+        </div>
+      </div>
+
+      <div>
+        <label for="commission-type" class="block text-sm font-semibold mb-1">Commission Type</label>
+        <select id="commission-type" name="commissionType" class="w-full rounded-lg border border-ink/20 px-3 py-2">
+          <option value="Custom Card Art">Custom Card Art (Pokemon / TCG)</option>
+          <option value="Original Illustration">Original Illustration / Painting</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="game" class="block text-sm font-semibold mb-1">Game (if applicable)</label>
+        <select id="game" name="game" class="w-full rounded-lg border border-ink/20 px-3 py-2">
+          <option value="Pokemon">Pokemon</option>
+          <option value="Magic: The Gathering">Magic: The Gathering</option>
+          <option value="Yu-Gi-Oh!">Yu-Gi-Oh!</option>
+          <option value="Other / N/A">Other / Not Applicable</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="subject" class="block text-sm font-semibold mb-1">
+          What card, character, or subject would you like featured?
+        </label>
+        <input id="subject" name="subject" type="text" placeholder="e.g. Umbreon, Charizard VMAX, my own OC..." class="w-full rounded-lg border border-ink/20 px-3 py-2" />
+      </div>
+
+      <div>
+        <label for="size" class="block text-sm font-semibold mb-1">Preferred Size / Format</label>
+        <select id="size" name="size" class="w-full rounded-lg border border-ink/20 px-3 py-2">
+          <option value="Card-sized print">Card-sized print</option>
+          <option value="A4 / letter print">A4 / letter print</option>
+          <option value="Poster size">Poster size</option>
+          <option value="Digital file only">Digital file only</option>
+          <option value="Not sure">Not sure / open to suggestions</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="message" class="block text-sm font-semibold mb-1">
+          Describe your idea (style, colors, references, deadlines, etc.)
+        </label>
+        <textarea id="message" name="message" rows="6" class="w-full rounded-lg border border-ink/20 px-3 py-2"></textarea>
+      </div>
+
+      <p class="text-xs text-ink/50">
+        Have reference images? Mention any links in your message, or we'll follow up by email to
+        collect them.
+      </p>
+
+      <button type="submit" class="btn btn-primary w-fit">Send Commission Request</button>
+      <p id="status" class="text-sm"></p>
+    </form>
+  </section>
+</Layout>
+
+<script>
+  const form = document.getElementById('commission-form') as HTMLFormElement;
+  const statusEl = document.getElementById('status')!;
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    statusEl.textContent = 'Sending...';
+    statusEl.className = 'text-sm text-ink/60';
+
+    const formData = new FormData(form);
+    const payload = {
+      type: 'card_art',
+      name: formData.get('name'),
+      email: formData.get('email'),
+      message: formData.get('message'),
+      details: {
+        commissionType: formData.get('commissionType'),
+        game: formData.get('game'),
+        subject: formData.get('subject'),
+        size: formData.get('size'),
+      },
+    };
+
+    try {
+      const res = await fetch('/api/inquiry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error('Request failed');
+      statusEl.textContent = "Thanks! We've received your commission request and will email you soon.";
+      statusEl.className = 'text-sm text-green-700';
+      form.reset();
+    } catch {
+      statusEl.textContent = 'Something went wrong. Please try again or email us directly.';
+      statusEl.className = 'text-sm text-red-700';
+    }
+  });
+</script>

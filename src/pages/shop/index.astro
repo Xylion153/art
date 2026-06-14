@@ -1,0 +1,43 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getProducts } from '../../lib/db';
+
+const db = Astro.locals.runtime.env.DB;
+const products = await getProducts(db);
+
+const categoryLabels: Record<string, string> = {
+  binder: 'Binders',
+  deckbox: 'Deck Boxes',
+  poster: 'Posters',
+  playmat: 'Playmats',
+  card_art: 'Custom Card Art',
+  original: 'Originals',
+};
+---
+
+<Layout title="Shop" description="Custom TCG binders, deck boxes, posters, playmats, and card art.">
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 pt-12 pb-20">
+    <h1 class="text-3xl sm:text-4xl font-bold mb-2">Shop</h1>
+    <p class="text-ink/70 mb-10 max-w-prose">
+      Every item below can be fully customized. Pick a product to see details, or jump straight
+      into the <a href="/builder" class="text-accent font-semibold hover:underline">custom builder</a>
+      to design from scratch with live pricing.
+    </p>
+
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {products.map((product) => (
+        <a href={`/shop/${product.slug}`} class="group block rounded-xl overflow-hidden bg-white shadow-sm">
+          <img src={product.image_url ?? '/images/hero.svg'} alt={product.name} class="w-full aspect-square object-cover group-hover:scale-105 transition-transform" />
+          <div class="p-4">
+            <p class="text-xs uppercase tracking-wide text-accent font-semibold mb-1">
+              {categoryLabels[product.category] ?? product.category}
+            </p>
+            <h2 class="font-bold">{product.name}</h2>
+            {product.description && <p class="text-sm text-ink/60 mt-1">{product.description}</p>}
+            <p class="mt-3 font-bold">From ${product.base_price.toFixed(2)}</p>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+</Layout>

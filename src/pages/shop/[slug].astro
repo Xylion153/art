@@ -1,0 +1,51 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getProductBySlug, getOptionGroups } from '../../lib/db';
+
+const db = Astro.locals.runtime.env.DB;
+const { slug } = Astro.params;
+const product = slug ? await getProductBySlug(db, slug) : null;
+
+if (!product) {
+  return Astro.redirect('/shop');
+}
+
+const optionGroups = product.configurable ? await getOptionGroups(db, product.category) : [];
+---
+
+<Layout title={product.name} description={product.description ?? undefined}>
+  <section class="max-w-5xl mx-auto px-4 sm:px-6 pt-12 pb-20 grid gap-10 lg:grid-cols-2">
+    <div class="rounded-2xl overflow-hidden shadow-sm">
+      <img src={product.image_url ?? '/images/hero.svg'} alt={product.name} class="w-full object-cover" />
+    </div>
+    <div>
+      <a href="/shop" class="text-sm text-accent font-semibold hover:underline">&larr; Back to shop</a>
+      <h1 class="text-3xl sm:text-4xl font-bold mt-2 mb-2">{product.name}</h1>
+      <p class="text-xl font-bold text-accent mb-4">From ${product.base_price.toFixed(2)}</p>
+      {product.description && <p class="text-ink/70 mb-6">{product.description}</p>}
+
+      {optionGroups.length > 0 && (
+        <div class="mb-6">
+          <h2 class="font-bold mb-2">Available Customizations</h2>
+          <ul class="space-y-1 text-sm text-ink/70">
+            {optionGroups.map((group) => (
+              <li>
+                <span class="font-semibold text-ink">{group.label}:</span>{' '}
+                {group.choices.map((c) => c.label).join(', ')}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <div class="flex flex-wrap gap-3">
+        {product.configurable === 1 && (
+          <a href={`/builder?product=${product.slug}`} class="btn btn-primary">
+            Customize This
+          </a>
+        )}
+        <a href="/commission" class="btn btn-outline">Request a Commission</a>
+      </div>
+    </div>
+  </section>
+</Layout>
