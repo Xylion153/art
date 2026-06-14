@@ -1,13 +1,16 @@
 @import "tailwindcss";
 
 @theme {
-  --color-ink: #2b1d10;
-  --color-parchment: #f6f1e7;
-  --color-parchment-dark: #ece3d1;
-  --color-accent: #b5482a;
-  --color-accent-dark: #8c3620;
-  --color-gold: #cb9b51;
-  --font-display: "Georgia", "Iowan Old Style", serif;
+  --color-ink: #5b4a3f;
+  --color-parchment: #fdf6ee;
+  --color-parchment-dark: #f6e8da;
+  --color-accent: #e2879a;
+  --color-accent-dark: #c96b81;
+  --color-sage: #a9c3a4;
+  --color-lavender: #cdbfe6;
+  --color-gold: #ecc878;
+  --font-display: "Fredoka", "Quicksand", sans-serif;
+  --font-body: "Nunito", "Quicksand", sans-serif;
 }
 
 html {
@@ -17,6 +20,10 @@ html {
 body {
   background-color: var(--color-parchment);
   color: var(--color-ink);
+  font-family: var(--font-body);
+}
+
+h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
 }
 
@@ -24,40 +31,45 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 0.5rem;
-  padding: 0.65rem 1.5rem;
-  font-weight: 600;
+  border-radius: 999px;
+  padding: 0.65rem 1.6rem;
+  font-weight: 700;
+  font-family: var(--font-display);
   transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
 }
 
 .btn-primary {
   background-color: var(--color-accent);
-  color: var(--color-parchment);
+  color: white;
+  box-shadow: 0 4px 14px -4px var(--color-accent);
 }
 .btn-primary:hover {
   background-color: var(--color-accent-dark);
+  transform: translateY(-1px);
 }
 
 .btn-outline {
-  border: 1px solid var(--color-ink);
-  color: var(--color-ink);
+  border: 2px solid var(--color-accent);
+  color: var(--color-accent-dark);
+  background-color: white;
 }
 .btn-outline:hover {
-  background-color: var(--color-ink);
-  color: var(--color-parchment);
+  background-color: var(--color-accent);
+  color: white;
 }
 
 .option-card {
   cursor: pointer;
-  border: 2px solid transparent;
-  border-radius: 0.75rem;
+  border: 3px solid transparent;
+  border-radius: 1rem;
   overflow: hidden;
   background-color: white;
+  box-shadow: 0 2px 10px -4px rgba(91, 74, 63, 0.25);
   transition: border-color 0.15s ease, transform 0.1s ease;
 }
 
 .option-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-2px) rotate(-0.5deg);
 }
 
 .option-card.selected {
