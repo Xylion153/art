@@ -6,5 +6,5 @@ pages_build_output_dir = "./dist"
 [[d1_databases]]
 binding = "DB"
 database_name = "art-storefront-db"
-database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+database_id = "5bb1bc6b-f6c1-4ec4-94e5-99bbcc5d175b"
 migrations_dir = "db/migrations"
