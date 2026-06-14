@@ -7,29 +7,49 @@ const db = Astro.locals.runtime.env.DB;
 const [gallery, products] = await Promise.all([getGalleryItems(db), getProducts(db)]);
 const featured = gallery.slice(0, 3);
 const featuredProducts = products.slice(0, 4);
+
+const rotations = ['-rotate-2', 'rotate-3', '-rotate-1', 'rotate-2', '-rotate-3', 'rotate-1'];
+const pinRotations = ['-rotate-6', 'rotate-3', 'rotate-12', '-rotate-3', 'rotate-6', '-rotate-12'];
 ---
 
 <Layout>
-  <section class="max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-20 grid gap-10 lg:grid-cols-2 items-center">
-    <div>
-      <p class="uppercase tracking-widest text-accent font-semibold text-sm mb-3">
-        Hand-painted art &amp; custom TCG gear
-      </p>
-      <h1 class="text-4xl sm:text-5xl font-bold leading-tight mb-4">
-        {SITE.tagline}
-      </h1>
-      <p class="text-ink/70 mb-8 max-w-prose">
-        Browse original pieces, order custom binders, deck boxes, posters, and playmats, or
-        commission a one-of-a-kind illustration for your favorite Pokémon or TCG card.
-      </p>
-      <div class="flex flex-wrap gap-3">
-        <a href="/builder" class="btn btn-primary">Start a Custom Order</a>
-        <a href="/gallery" class="btn btn-outline">View Gallery</a>
-        <a href="/commission" class="btn btn-outline">Request a Commission</a>
+  <section class="pt-8 sm:pt-10">
+    <div class="relative pb-6">
+      <div class="absolute left-0 right-0 top-12 border-t-2 border-dashed border-ink/15"></div>
+      <div class="flex gap-6 sm:gap-10 overflow-x-auto no-scrollbar px-6 sm:px-12 pt-2">
+        {gallery.map((item, i) => (
+          <a
+            href="/gallery"
+            class:list={[
+              'polaroid shrink-0 snap-center w-40 sm:w-48',
+              rotations[i % rotations.length],
+            ]}
+          >
+            <span class:list={['polaroid-pin bg-accent', pinRotations[i % pinRotations.length]]}></span>
+            <img src={item.image_url} alt={item.title} class="w-full aspect-square object-cover" />
+            <p class="mt-2 text-center text-xs sm:text-sm text-ink/70 truncate">{item.title}</p>
+          </a>
+        ))}
       </div>
     </div>
-    <div class="rounded-2xl overflow-hidden shadow-lg">
-      <img src="/images/hero.svg" alt="Featured artwork" class="w-full h-full object-cover" />
+    <p class="text-center text-xs text-ink/40 -mt-2 mb-6">&larr; scroll for more art &rarr;</p>
+  </section>
+
+  <section class="max-w-3xl mx-auto px-4 sm:px-6 pb-20 text-center">
+    <p class="uppercase tracking-widest text-accent font-semibold text-sm mb-3">
+      Hand-painted art &amp; custom TCG gear
+    </p>
+    <h1 class="text-4xl sm:text-5xl font-bold leading-tight mb-4">
+      {SITE.tagline}
+    </h1>
+    <p class="text-ink/70 mb-8 max-w-prose mx-auto">
+      Browse original pieces, order custom binders, deck boxes, posters, and playmats, or
+      commission a one-of-a-kind illustration for your favorite Pokémon or TCG card.
+    </p>
+    <div class="flex flex-wrap justify-center gap-3">
+      <a href="/builder" class="btn btn-primary">Start a Custom Order</a>
+      <a href="/gallery" class="btn btn-outline">View Gallery</a>
+      <a href="/commission" class="btn btn-outline">Request a Commission</a>
     </div>
   </section>
 
