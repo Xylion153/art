@@ -3,11 +3,11 @@
 
 -- ===== Products =====
 INSERT INTO products (slug, name, category, description, base_price, image_url, configurable, sort_order) VALUES
-  ('custom-tcg-binder', 'Custom TCG Binder', 'binder', 'A hand-painted binder cover to store and show off your favorite cards.', 45.00, '/images/products/binder.svg', 1, 1),
-  ('custom-deck-box', 'Custom Deck Box', 'deckbox', 'A one-of-a-kind deck box with custom art for your TCG deck.', 25.00, '/images/products/deckbox.svg', 1, 2),
-  ('custom-poster', 'Custom Art Poster', 'poster', 'A printed poster of an original illustration, framed to your liking.', 30.00, '/images/products/poster.svg', 1, 3),
-  ('custom-playmat', 'Custom Playmat', 'playmat', 'A full-size playmat featuring original artwork for tournament or casual play.', 40.00, '/images/products/playmat.svg', 1, 4),
-  ('custom-card-art', 'Custom Card Art', 'card_art', 'A hand-painted or digitally illustrated piece based on your favorite TCG card.', 60.00, '/images/products/card-art.svg', 1, 5);
+  ('custom-tcg-binder', 'Custom TCG Binder', 'binder', 'A hand-painted binder cover to store and show off your favorite cards.', 45.00, 'https://picsum.photos/seed/tcg-binder/800/800', 1, 1),
+  ('custom-deck-box', 'Custom Deck Box', 'deckbox', 'A one-of-a-kind deck box with custom art for your TCG deck.', 25.00, 'https://picsum.photos/seed/deck-box/800/800', 1, 2),
+  ('custom-poster', 'Custom Art Poster', 'poster', 'A printed poster of an original illustration, framed to your liking.', 30.00, 'https://picsum.photos/seed/art-poster/800/800', 1, 3),
+  ('custom-playmat', 'Custom Playmat', 'playmat', 'A full-size playmat featuring original artwork for tournament or casual play.', 40.00, 'https://picsum.photos/seed/playmat/800/800', 1, 4),
+  ('custom-card-art', 'Custom Card Art', 'card_art', 'A hand-painted or digitally illustrated piece based on your favorite TCG card.', 60.00, 'https://picsum.photos/seed/card-art/800/800', 1, 5);
 
 -- ===== Option groups & choices =====
 
@@ -128,9 +128,9 @@ INSERT INTO option_choices (group_id, label, image_url, price_modifier, sort_ord
 
 -- ===== Gallery =====
 INSERT INTO gallery_items (title, image_url, description, medium, price, available, sort_order) VALUES
-  ('Charizard Study', '/images/gallery/piece-1.svg', 'A watercolor study inspired by Charizard.', 'Watercolor on paper', 120.00, 1, 1),
-  ('Forest Spirit', '/images/gallery/piece-2.svg', 'Original character illustration, digital painting.', 'Digital painting', 180.00, 1, 2),
-  ('Moonlit Garden', '/images/gallery/piece-3.svg', 'An original gouache piece exploring color and light.', 'Gouache on board', 150.00, 0, 3),
-  ('Trainer Portrait', '/images/gallery/piece-4.svg', 'Custom trainer portrait commission, ink and watercolor.', 'Ink & watercolor', 95.00, 1, 4),
-  ('Eevee Evolutions', '/images/gallery/piece-5.svg', 'A playful study of the Eevee evolution line.', 'Digital illustration', 0, 0, 5),
-  ('Card Back Pattern', '/images/gallery/piece-6.svg', 'Original pattern design, available as a binder or deck box cover.', 'Digital pattern', 0, 0, 6);
+  ('Charizard Study', 'https://picsum.photos/seed/charizard-study/800/800', 'A watercolor study inspired by Charizard.', 'Watercolor on paper', 120.00, 1, 1),
+  ('Forest Spirit', 'https://picsum.photos/seed/forest-spirit/800/800', 'Original character illustration, digital painting.', 'Digital painting', 180.00, 1, 2),
+  ('Moonlit Garden', 'https://picsum.photos/seed/moonlit-garden/800/800', 'An original gouache piece exploring color and light.', 'Gouache on board', 150.00, 0, 3),
+  ('Trainer Portrait', 'https://picsum.photos/seed/trainer-portrait/800/800', 'Custom trainer portrait commission, ink and watercolor.', 'Ink & watercolor', 95.00, 1, 4),
+  ('Eevee Evolutions', 'https://picsum.photos/seed/eevee-evolutions/800/800', 'A playful study of the Eevee evolution line.', 'Digital illustration', 0, 0, 5),
+  ('Card Back Pattern', 'https://picsum.photos/seed/card-pattern/800/800', 'Original pattern design, available as a binder or deck box cover.', 'Digital pattern', 0, 0, 6);
