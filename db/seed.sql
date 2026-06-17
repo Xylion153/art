@@ -3,11 +3,17 @@
 
 -- ===== Products =====
 INSERT INTO products (slug, name, category, description, base_price, image_url, configurable, sort_order) VALUES
-  ('custom-tcg-binder', 'Custom TCG Binder', 'binder', 'A hand-painted binder cover to store and show off your favorite cards.', 45.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Gustav_Klimt_016.jpg?width=800', 1, 1),
-  ('custom-deck-box', 'Custom Deck Box', 'deckbox', 'A one-of-a-kind deck box with custom art for your TCG deck.', 25.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Great_Wave_off_Kanagawa2.jpg?width=800', 1, 2),
-  ('custom-poster', 'Custom Art Poster', 'poster', 'A printed poster of an original illustration, framed to your liking.', 30.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg?width=800', 1, 3),
-  ('custom-playmat', 'Custom Playmat', 'playmat', 'A full-size playmat featuring original artwork for tournament or casual play.', 40.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Henri_Rousseau_-_Tiger_in_a_Tropical_Storm_(Surprised!)_-_National_Gallery_London.jpg?width=800', 1, 4),
-  ('custom-card-art', 'Custom Card Art', 'card_art', 'A hand-painted or digitally illustrated piece based on your favorite TCG card.', 60.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Albrecht_D%C3%BCrer_-_Young_Hare_-_Google_Art_Project.jpg?width=800', 1, 5);
+  ('binder-cloudpup',    'CloudPup Binder',       'binder',   'Sky blue binder with a cute puppy sitting on clouds. Soft touch finish.',                      45.00, '/images/products/binder-cloudpup.jpg',    1, 1),
+  ('binder-moonbun',     'MoonBun Binder',        'binder',   'Lavender binder with a bunny perched on a crescent moon. Matte finish.',                       45.00, '/images/products/binder-moonbun.jpg',     1, 2),
+  ('binder-lilypad',     'Lilypad Binder',        'binder',   'Mint green binder with a frog on a lily pad surrounded by lotus flowers. Soft touch.',          45.00, '/images/products/binder-lilypad.jpg',     1, 3),
+  ('binder-pawstar',     'PawStar Binder',        'binder',   'Soft pink binder with a kitten holding a star among sparkles and clouds. Matte finish.',        45.00, '/images/products/binder-pawstar.jpg',     1, 4),
+  ('deckbox-clouddle',   'Clouddle Deck Box',     'deckbox',  'Sky blue deck box with a polar bear cub on clouds. Soft touch finish.',                         25.00, '/images/products/deckbox-clouddle.jpg',   1, 5),
+  ('deckbox-moonwhisker','MoonWhisker Deck Box',  'deckbox',  'Deep indigo deck box with a moon cat sitting on purple clouds. Matte finish.',                  25.00, '/images/products/deckbox-moonwhisker.jpg',1, 6),
+  ('deckbox-starpaw',    'StarPaw Deck Box',      'deckbox',  'Soft pink deck box with a white kitten hugging a golden star. Matte finish.',                   25.00, '/images/products/deckbox-starpaw.jpg',    1, 7),
+  ('deckbox-lilyhop',    'LilyHop Deck Box',      'deckbox',  'Mint green deck box with a frog on a lily pad and lotus flowers. Soft touch.',                  25.00, '/images/products/deckbox-lilyhop.jpg',    1, 8),
+  ('custom-poster',      'Custom Art Poster',     'poster',   'A printed poster of an original illustration, framed to your liking.',                          30.00, '/images/products/poster.svg',             1, 9),
+  ('custom-playmat',     'Custom Playmat',        'playmat',  'A full-size playmat featuring original artwork for tournament or casual play.',                  40.00, '/images/products/playmat.svg',            1, 10),
+  ('custom-card-art',    'Custom Card Art',       'card_art', 'A hand-painted or digitally illustrated piece based on your favorite TCG card.',                60.00, '/images/products/card-art.svg',           1, 11);
 
 -- ===== Option groups & choices =====
 
@@ -128,9 +134,9 @@ INSERT INTO option_choices (group_id, label, image_url, price_modifier, sort_ord
 
 -- ===== Gallery =====
 INSERT INTO gallery_items (title, image_url, description, medium, price, available, sort_order) VALUES
-  ('Charizard Study', 'https://commons.wikimedia.org/wiki/Special:FilePath/Great_Wave_off_Kanagawa2.jpg?width=800', 'A watercolor study inspired by Charizard.', 'Watercolor on paper', 120.00, 1, 1),
-  ('Forest Spirit', 'https://commons.wikimedia.org/wiki/Special:FilePath/Henri_Rousseau_-_Tiger_in_a_Tropical_Storm_(Surprised!)_-_National_Gallery_London.jpg?width=800', 'Original character illustration, digital painting.', 'Digital painting', 180.00, 1, 2),
-  ('Moonlit Garden', 'https://commons.wikimedia.org/wiki/Special:FilePath/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg?width=800', 'An original gouache piece exploring color and light.', 'Gouache on board', 150.00, 0, 3),
-  ('Trainer Portrait', 'https://commons.wikimedia.org/wiki/Special:FilePath/Johannes_Vermeer_-_Girl_with_a_Pearl_Earring_-_Google_Art_Project.jpg?width=800', 'Custom trainer portrait commission, ink and watercolor.', 'Ink & watercolor', 95.00, 1, 4),
-  ('Eevee Evolutions', 'https://commons.wikimedia.org/wiki/Special:FilePath/Albrecht_D%C3%BCrer_-_Young_Hare_-_Google_Art_Project.jpg?width=800', 'A playful study of the Eevee evolution line.', 'Digital illustration', 0, 0, 5),
-  ('Card Back Pattern', 'https://commons.wikimedia.org/wiki/Special:FilePath/Gustav_Klimt_016.jpg?width=800', 'Original pattern design, available as a binder or deck box cover.', 'Digital pattern', 0, 0, 6);
+  ('CloudPup Binder',    '/images/products/binder-cloudpup.jpg',    'Sky blue binder design featuring a puppy on clouds with a rainbow. Soft touch finish.',      'Digital illustration', 45.00, 1, 1),
+  ('MoonBun Binder',     '/images/products/binder-moonbun.jpg',     'Lavender binder design with a bunny on a crescent moon holding a star. Matte finish.',        'Digital illustration', 45.00, 1, 2),
+  ('Lilypad Binder',     '/images/products/binder-lilypad.jpg',     'Mint green binder design with a frog on a lily pad surrounded by lotus blossoms.',            'Digital illustration', 45.00, 1, 3),
+  ('PawStar Binder',     '/images/products/binder-pawstar.jpg',     'Soft pink binder design with a kitten holding a cookie star among clouds and sparkles.',      'Digital illustration', 45.00, 1, 4),
+  ('Clouddle Deck Box',  '/images/products/deckbox-clouddle.jpg',   'Sky blue deck box with a polar bear cub holding a star on fluffy clouds.',                    'Digital illustration', 25.00, 1, 5),
+  ('MoonWhisker Deck Box','/images/products/deckbox-moonwhisker.jpg','Deep indigo deck box featuring a moon cat on swirling purple clouds.',                       'Digital illustration', 25.00, 1, 6);
